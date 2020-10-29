@@ -42,6 +42,27 @@ public class Sample1
         return true;
     }
 
+    static boolean isBST(Solution.TreeNode root){
+
+        if (root == null) return true;
+        return helper(root, Integer.MIN_VALUE, Integer.MAX_VALUE);
+    }
+
+    static boolean helper(Solution.TreeNode root, int min, int max) {
+
+        // base case
+        if (root == null) return true;
+
+        if (root.val < min || root.val > max)
+            return false;
+
+        boolean left = helper(root.left_ptr, min, root.val);
+        boolean right = helper(root.right_ptr, root.val, max);
+
+        return left && right;
+    }
+
+
     public static void main(String [] args)
     {
         /*
@@ -51,7 +72,9 @@ public class Sample1
         new Thread(null, new Runnable() {
             public void run() {
                 try{
-                    solve();
+                    //1. problem 1 - solveSingleValueTree();
+                    //2. problem 2 - solveIsBST();
+                    solveIsBST();
                 }
                 catch(Exception e){
                     e.printStackTrace();
@@ -60,10 +83,20 @@ public class Sample1
         }, "1", 1 << 26).start();
     }
 
-    public static void solve(){
+    public static void solveSingleValueTree(){
         try{
             Solution.TreeNode root = Solution.readBinaryTree();
             int result = findSingleValueTrees(root);
+            System.out.println(result);
+        }catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public static void solveIsBST(){
+        try{
+            Solution.TreeNode root = Solution.readBinaryTree();
+            boolean result = isBST(root);
             System.out.println(result);
         }catch (Exception e) {
             System.out.println(e.getMessage());
