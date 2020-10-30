@@ -1,8 +1,11 @@
 package Trees;
 
 import jdk.nashorn.internal.runtime.StoredScript;
-
+import Trees.Solution.*;
 import java.util.*;
+
+import static Trees.Solution.printCircularList;
+import static Trees.Solution.readBinaryTree;
 
 public class Sample1
 {
@@ -11,14 +14,13 @@ public class Sample1
     */
     static int count = 0;
 
-    static int findSingleValueTrees(Solution.TreeNode root){
+    static int findSingleValueTrees(TreeNode root){
         if (root == null) return 0;
         boolean isUnival = isUnivalueTree(root);
         return count;
     }
 
-
-    static boolean isUnivalueTree(Solution.TreeNode root) {
+    static boolean isUnivalueTree(TreeNode root) {
         // base case - if the node has no children this is a unival subtree
         if (root.left_ptr == null && root.right_ptr == null) {
             //
@@ -44,13 +46,13 @@ public class Sample1
         return true;
     }
 
-    static boolean isBST(Solution.TreeNode root){
+    static boolean isBST(TreeNode root){
 
         if (root == null) return true;
         return helper(root, Integer.MIN_VALUE, Integer.MAX_VALUE);
     }
 
-    static boolean helper(Solution.TreeNode root, int min, int max) {
+    static boolean helper(TreeNode root, int min, int max) {
 
         // base case
         if (root == null) return true;
@@ -65,9 +67,9 @@ public class Sample1
     }
 
 
-    static boolean isBSTIterative(Solution.TreeNode root){
+    static boolean isBSTIterative(TreeNode root){
         System.out.println("here at beginning");
-       Stack<Solution.TreeNode> stack = new Stack<>();
+       Stack<TreeNode> stack = new Stack<>();
        int left_ptr_val = Integer.MIN_VALUE;
 
        while (!stack.isEmpty() || root != null) {
@@ -86,11 +88,11 @@ public class Sample1
        return true;
     }
 
-    static int[] postorderTraversal(Solution.TreeNode root){
+    static int[] postorderTraversal(TreeNode root){
         // Create two stacks
         List<Integer> returnList = new ArrayList<>();
 
-        Stack<Solution.TreeNode> s1, s2;
+        Stack<TreeNode> s1, s2;
 
         s1 = new Stack<>();
         s2 = new Stack<>();
@@ -104,7 +106,7 @@ public class Sample1
         // Run while first stack is not empty
         while (!s1.isEmpty()) {
             // Pop an item from s1 and push it to s2
-            Solution.TreeNode temp = s1.pop();
+            TreeNode temp = s1.pop();
             s2.push(temp);
 
             // Push left and right children of
@@ -117,7 +119,7 @@ public class Sample1
 
         // Print all elements of second stack
         while (!s2.isEmpty()) {
-            Solution.TreeNode temp = s2.pop();
+            TreeNode temp = s2.pop();
             returnList.add(temp.val);
         }
         int[] ints = new int[returnList.size()];
@@ -141,7 +143,8 @@ public class Sample1
                     //1. problem 1 - solveSingleValueTree();
                     //2. problem 2 - solveIsBST();
                     //2. problem 2- solveIsBSTIterative();
-                    solvePostorderTraversal();
+                    //3. solvePostorderTraversal();
+                    solveBinaryTreeToDLL();
                 }
                 catch(Exception e){
                     e.printStackTrace();
@@ -150,9 +153,45 @@ public class Sample1
         }, "1", 1 << 26).start();
     }
 
+
+    static TreeNode previous = null;
+
+    static TreeNode BTtoLL(TreeNode root){
+
+        if (root == null) return root;
+        TreeNode dummy = new TreeNode();
+        previous = dummy;
+        inorder(root);
+
+        previous.right_ptr = dummy.right_ptr;  //
+        dummy.right_ptr.left_ptr = previous;  //
+        return dummy.right_ptr;  // right_ptr -- next...
+    }
+
+
+    static void inorder(TreeNode current) {
+
+        if (current == null) return;        // test case -
+        inorder(current.left_ptr);       // previous = 2..
+        previous.right_ptr = current;   // 1-->2
+        current.left_ptr = previous;     // 2--> 1
+        previous = current;           // previous = now 3.
+        inorder(current.right_ptr);
+    }
+
+    public static void solveBinaryTreeToDLL() {
+        try{
+            TreeNode root = readBinaryTree();
+            TreeNode result = BTtoLL(root);
+            printCircularList(result);
+        }catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
     public static void solveSingleValueTree(){
         try{
-            Solution.TreeNode root = Solution.readBinaryTree();
+            TreeNode root = readBinaryTree();
             int result = findSingleValueTrees(root);
             System.out.println(result);
         }catch (Exception e) {
@@ -162,7 +201,7 @@ public class Sample1
 
     public static void solveIsBST(){
         try{
-            Solution.TreeNode root = Solution.readBinaryTree();
+            TreeNode root = readBinaryTree();
             boolean result = isBST(root);
             System.out.println(result);
         }catch (Exception e) {
@@ -172,7 +211,7 @@ public class Sample1
 
     public static void solveIsBSTIterative(){
         try{
-            Solution.TreeNode root = Solution.readBinaryTree();
+            TreeNode root = readBinaryTree();
             boolean result = isBSTIterative(root);
             System.out.println(result);
         }catch (Exception e) {
@@ -196,7 +235,7 @@ public class Sample1
 
     public static void solvePostorderTraversal(){
         try{
-            Solution.TreeNode root = Solution.readBinaryTree();
+            TreeNode root = readBinaryTree();
             int[] result = postorderTraversal(root);
             printArray(result);
             System.out.println(result);

@@ -114,4 +114,17 @@ public class Solution {
         inputBinaryTree.buildFromRawValues();
         return inputBinaryTree.root;
     }
+
+    public static void printCircularList(TreeNode circularListHead) {
+        if (circularListHead == null) {
+            System.out.println();
+            return;
+        }
+        TreeNode tmpHead = circularListHead;
+        while (tmpHead.right_ptr != circularListHead) {
+            System.out.print(tmpHead.val + " ");
+            tmpHead = tmpHead.right_ptr;
+        }
+        System.out.println(tmpHead.val);
+    }
 }
